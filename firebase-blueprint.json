@@ -1,0 +1,241 @@
+{
+  "entities": {
+    "CropRate": {
+      "title": "Crop Rate",
+      "description": "Daily purchase rates for agricultural crops in Sullia region",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the crop rate item",
+          "maxLength": 64
+        },
+        "categoryId": {
+          "type": "string",
+          "description": "Identifier of the crop category (e.g., arecanut, coconut)",
+          "maxLength": 32
+        },
+        "categoryName": {
+          "type": "string",
+          "description": "English name of the crop category",
+          "maxLength": 64
+        },
+        "categoryNameKn": {
+          "type": "string",
+          "description": "Kannada name of the crop category",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the crop grade in English",
+          "maxLength": 64
+        },
+        "nameKn": {
+          "type": "string",
+          "description": "Name of the crop grade in Kannada",
+          "maxLength": 64
+        },
+        "price": {
+          "type": "number",
+          "description": "Current purchase rate in INR"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit of measurement (e.g., ಕೆಜಿ, kg)",
+          "maxLength": 32
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Representative image URL for the crop category",
+          "maxLength": 512
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Sorting display order priority"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last rate update",
+          "maxLength": 64
+        }
+      },
+      "required": ["categoryId", "categoryName", "categoryNameKn", "name", "nameKn", "price", "unit"]
+    },
+    "Product": {
+      "title": "Farm Input Product",
+      "description": "Fertilizers, nutrients and crop protection products stocked in the shop",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique product SKU or identifier",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Brand/Product title in English",
+          "maxLength": 100
+        },
+        "nameKn": {
+          "type": "string",
+          "description": "Product title or description note in Kannada",
+          "maxLength": 100
+        },
+        "category": {
+          "type": "string",
+          "description": "Product category classification",
+          "maxLength": 50
+        },
+        "price": {
+          "type": "number",
+          "description": "Selling retail price in INR"
+        },
+        "packSize": {
+          "type": "string",
+          "description": "Packaging size (e.g. 50 kg, 1 Litre)",
+          "maxLength": 32
+        },
+        "isAvailable": {
+          "type": "boolean",
+          "description": "Stock status indicator"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Product visual photo URL",
+          "maxLength": 512
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last inventory update",
+          "maxLength": 64
+        }
+      },
+      "required": ["name", "price", "packSize", "isAvailable"]
+    },
+    "ShopConfig": {
+      "title": "Shop Information and Notice",
+      "description": "Shop owner contact information and daily alerts",
+      "type": "object",
+      "properties": {
+        "shopName": {
+          "type": "string",
+          "description": "Shop trading name in English",
+          "maxLength": 100
+        },
+        "shopNameKn": {
+          "type": "string",
+          "description": "Shop trading name in Kannada",
+          "maxLength": 100
+        },
+        "ownerName": {
+          "type": "string",
+          "description": "Shop proprietor name",
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "description": "Primary phone contact number",
+          "maxLength": 20
+        },
+        "whatsapp": {
+          "type": "string",
+          "description": "WhatsApp contact number",
+          "maxLength": 20
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical shop address location",
+          "maxLength": 250
+        },
+        "addressKn": {
+          "type": "string",
+          "description": "Kannada physical shop address",
+          "maxLength": 250
+        },
+        "announcement": {
+          "type": "string",
+          "description": "Market notice or store announcement in English",
+          "maxLength": 300
+        },
+        "announcementKn": {
+          "type": "string",
+          "description": "Market notice or store announcement in Kannada",
+          "maxLength": 300
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update",
+          "maxLength": 64
+        }
+      },
+      "required": ["shopName", "shopNameKn", "ownerName", "phone", "whatsapp", "address"]
+    },
+    "FarmerInquiry": {
+      "title": "Farmer Crop Inquiries and Offers",
+      "description": "Crop selling inquiries submitted by farmers to Canara Traders",
+      "type": "object",
+      "properties": {
+        "farmerName": {
+          "type": "string",
+          "description": "Name of the farmer",
+          "maxLength": 100
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact telephone number of farmer",
+          "maxLength": 20
+        },
+        "cropType": {
+          "type": "string",
+          "description": "Selected crop category or grade",
+          "maxLength": 64
+        },
+        "estimatedQuantity": {
+          "type": "string",
+          "description": "Approximate quantity to sell (e.g. 5 quintals, 200 kg)",
+          "maxLength": 64
+        },
+        "village": {
+          "type": "string",
+          "description": "Farmer village or taluk location",
+          "maxLength": 100
+        },
+        "notes": {
+          "type": "string",
+          "description": "Special notes or moisture status",
+          "maxLength": 500
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the inquiry",
+          "enum": ["pending", "contacted", "completed"],
+          "maxLength": 20
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Submission ISO timestamp",
+          "maxLength": 64
+        }
+      },
+      "required": ["farmerName", "phone", "cropType"]
+    }
+  },
+  "firestore": {
+    "/crop_rates/{cropRateId}": {
+      "schema": "CropRate",
+      "description": "Real-time crop purchase rates managed by the shop"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Store inventory of fertilizers, pesticides, and agricultural supplies"
+    },
+    "/shop_config/{configId}": {
+      "schema": "ShopConfig",
+      "description": "Single store configuration and contact details document"
+    },
+    "/farmer_inquiries/{inquiryId}": {
+      "schema": "FarmerInquiry",
+      "description": "Farmers' crop offer submissions and price requests"
+    }
+  }
+}

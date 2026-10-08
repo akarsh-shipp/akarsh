@@ -1,0 +1,113 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'krishnaxcoder@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidCropRate(data) {
+      return data.keys().hasAll(['categoryId', 'categoryName', 'categoryNameKn', 'name', 'nameKn', 'price', 'unit']) &&
+             data.categoryId is string && data.categoryId.size() > 0 && data.categoryId.size() <= 32 &&
+             data.categoryName is string && data.categoryName.size() > 0 && data.categoryName.size() <= 64 &&
+             data.categoryNameKn is string && data.categoryNameKn.size() > 0 && data.categoryNameKn.size() <= 64 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 64 &&
+             data.nameKn is string && data.nameKn.size() > 0 && data.nameKn.size() <= 64 &&
+             data.price is number && data.price >= 0 && data.price <= 500000 &&
+             data.unit is string && data.unit.size() > 0 && data.unit.size() <= 32 &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 512)) &&
+             (!('sortOrder' in data) || data.sortOrder is number) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price', 'packSize', 'isAvailable']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.price is number && data.price >= 0 && data.price <= 500000 &&
+             data.packSize is string && data.packSize.size() > 0 && data.packSize.size() <= 32 &&
+             data.isAvailable is bool &&
+             (!('nameKn' in data) || (data.nameKn is string && data.nameKn.size() <= 100)) &&
+             (!('category' in data) || (data.category is string && data.category.size() <= 50)) &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 512)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidShopConfig(data) {
+      return data.keys().hasAll(['shopName', 'shopNameKn', 'ownerName', 'phone', 'whatsapp', 'address']) &&
+             data.shopName is string && data.shopName.size() > 0 && data.shopName.size() <= 100 &&
+             data.shopNameKn is string && data.shopNameKn.size() > 0 && data.shopNameKn.size() <= 100 &&
+             data.ownerName is string && data.ownerName.size() > 0 && data.ownerName.size() <= 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
+             data.whatsapp is string && data.whatsapp.size() > 0 && data.whatsapp.size() <= 20 &&
+             data.address is string && data.address.size() > 0 && data.address.size() <= 250 &&
+             (!('addressKn' in data) || (data.addressKn is string && data.addressKn.size() <= 250)) &&
+             (!('announcement' in data) || (data.announcement is string && data.announcement.size() <= 300)) &&
+             (!('announcementKn' in data) || (data.announcementKn is string && data.announcementKn.size() <= 300)) &&
+             (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 64));
+    }
+
+    function isValidFarmerInquiry(data) {
+      return data.keys().hasAll(['farmerName', 'phone', 'cropType']) &&
+             data.farmerName is string && data.farmerName.size() > 0 && data.farmerName.size() <= 100 &&
+             data.phone is string && data.phone.size() > 0 && data.phone.size() <= 20 &&
+             data.cropType is string && data.cropType.size() > 0 && data.cropType.size() <= 64 &&
+             (!('estimatedQuantity' in data) || (data.estimatedQuantity is string && data.estimatedQuantity.size() <= 64)) &&
+             (!('village' in data) || (data.village is string && data.village.size() <= 100)) &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() <= 500)) &&
+             (!('status' in data) || (data.status is string && (data.status == 'pending' || data.status == 'contacted' || data.status == 'completed'))) &&
+             (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 64));
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Crop Rates: Public read, authenticated users or admin can manage
+    match /crop_rates/{cropRateId} {
+      allow read: if true;
+      allow create: if isValidId(cropRateId) && isValidCropRate(request.resource.data) && isSignedIn();
+      allow update: if isValidId(cropRateId) && isValidCropRate(request.resource.data) && isSignedIn();
+      allow delete: if isValidId(cropRateId) && isSignedIn();
+    }
+
+    // Products: Public read, authenticated users can manage
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isValidId(productId) && isValidProduct(request.resource.data) && isSignedIn();
+      allow update: if isValidId(productId) && isValidProduct(request.resource.data) && isSignedIn();
+      allow delete: if isValidId(productId) && isSignedIn();
+    }
+
+    // Shop Configuration: Public read, authenticated users can manage
+    match /shop_config/{configId} {
+      allow read: if true;
+      allow create, update: if isValidId(configId) && isValidShopConfig(request.resource.data) && isSignedIn();
+      allow delete: if false;
+    }
+
+    // Farmer Inquiries: Anyone can submit an inquiry; only authenticated users/staff can view/process
+    match /farmer_inquiries/{inquiryId} {
+      allow create: if isValidId(inquiryId) && isValidFarmerInquiry(request.resource.data);
+      allow read, update, delete: if isSignedIn();
+    }
+
+    // Admins registry collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Canara Traders - Agricultural Market & Inputs",
+  "description": "Daily crop rates for Arecanut, Coconut, Pepper, Rubber, and Cocoa with farm input inventory for Canara Traders in Sullia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

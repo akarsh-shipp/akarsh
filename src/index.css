@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --forest: #2f4a3d;
+    --forest-dark: #20332a;
+    --gold: #c98a2b;
+    --gold-deep: #a86f1c;
+    --paper: #f6f1e2;
+    --paper-alt: #efe7d2;
+    --soil: #5c4033;
+    --maroon: #8b3a3a;
+    --green-ok: #2e7d5b;
+    --red-no: #a8341f;
+    --ink: #241c15;
+    --line: rgba(36, 28, 21, 0.16);
+    --font-inter: 'Inter', 'Noto Sans Kannada', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  html {
+    font-family: var(--font-inter);
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    -webkit-text-size-adjust: 100%;
+    box-sizing: border-box;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-inter);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+  }
+
+  #root {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-inter);
+    color: var(--forest-dark);
+  }
+
+  button, input, select, textarea {
+    font-family: var(--font-inter);
+  }
+}
+
+/* Enforce Inter font family across all typography utility classes */
+.font-kn-head,
+.font-kn-body,
+.font-en-head,
+.font-en-body,
+.font-inter {
+  font-family: 'Inter', 'Noto Sans Kannada', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Utility to hide scrollbars while allowing touch scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
